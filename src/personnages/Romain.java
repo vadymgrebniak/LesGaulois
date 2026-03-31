@@ -3,23 +3,22 @@ package personnages;
 public class Romain {
 	private String nom;
 	private int force;
-	
+
 	public static void main(String[] args) {
-		Romain minus = new Romain("Minus", -6);
+		Romain minus = new Romain("Minus", 12);
 		System.out.println(minus.getNom());
-		
 	}
 
 	public Romain(String nom, int force) {
 		this.nom = nom;
 		this.force = force;
-		assert isInvariantVerified() == true;		
+		assert isInvariantVerified();
 	}
 
 	public String getNom() {
 		return nom;
 	}
-	
+
 	public void parler(String texte) {
 		System.out.println(prendreParole() + "\"" + texte + "\"");
 	}
@@ -29,24 +28,25 @@ public class Romain {
 	}
 
 	public void recevoirCoup(int forceCoup) {
+		assert forceCoup > 0;
+
+		int forceRomainDebut = this.force;
+
 		this.force -= forceCoup;
+
 		if (this.force > 0) {
 			parler("Aïe");
-		}
+		} 
 		else {
 			parler("J'abandonne !");
-			force = 0;
+			this.force = 0;
 		}
+		
+		assert this.force < forceRomainDebut;
 	}
-	
+
 	private Boolean isInvariantVerified() {
-		if (force >= 0) {
-			
-			return true;
-		}
-		else {
-			return false;
-		}
+		return this.force >= 0;
 	}
-	
+
 }
