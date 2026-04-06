@@ -30,21 +30,19 @@ public class Romain {
 		System.out.println(prendreParole() + "\"" + texte + "\"");
 	}
 
-	public void recevoirCoup(int forceCoup) {
-		assert forceCoup > 0;
+	public Equipement[] recevoirCoup(int forceCoup) {
+		Equipement[] equipementEjecte = null;
+		forceCoup = calculerResistanceEquipement(forceCoup);
+		force -= forceCoup;
 
-		int forceRomainDebut = this.force;
-
-		this.force -= forceCoup;
-
-		if (this.force > 0) {
-			parler("Aïe");
+		if (force == 0) {
+			equipementEjecte = ejecterEquipement();
+			parler("J'abandonne...");
 		} else {
-			parler("J'abandonne !");
-			this.force = 0;
+			parler("Aïe");
 		}
 
-		assert this.force < forceRomainDebut;
+		return equipementEjecte;
 	}
 
 	public void sEquiper(Equipement equipement) {
@@ -89,6 +87,57 @@ public class Romain {
 
 	private Boolean isInvariantVerified() {
 		return this.force >= 0;
+	}
+
+	private int calculerResistanceEquipement(int forceCoup) {
+		String texte = "Ma force est de " + this.force + ", et la force du coup est de " + forceCoup;
+		int resistanceEquipement = 0;
+
+		if (nbEquipement != 0) {
+			for (int i = 0; i < nbEquipement; i++) {
+				if (equipements[i] != null) {
+					if (equipements[i].equals(Equipement.BOUCLIER)) {
+						resistanceEquipement += 6;
+					} else {
+						resistanceEquipement += 3;
+					}
+				}
+			}
+		}
+
+		texte += "\nMais heureusement, grace à mon équipement sa force ";
+		forceCoup -= resistanceEquipement;
+
+		if (forceCoup < 0) {
+			forceCoup = 0;
+			texte += "a été complètement absorbée.";
+		} else {
+			texte += "est diminué de " + resistanceEquipement + "!";
+		}
+
+		parler(texte);
+
+		return forceCoup;
+	}
+
+	private Equipement[] ejecterEquipement() {
+		Equipement[] equipementEjecte = new Equipement[nbEquipement];
+		System.out.println("L'équipement de " + nom + " s'envole sous la force du coup.");
+
+		int nbEquipementEjecte = 0;
+		for (int i = 0; i < nbEquipement; i++) {
+			if (equipements[i] != null) {
+				equipementEjecte[nbEquipementEjecte] = equipements[i];
+				nbEquipementEjecte++;
+				equipements[i] = null;
+			}
+		}
+
+		return equipementEjecte;
+	}
+
+	public int getForce() {
+		return this.force;
 	}
 
 }
